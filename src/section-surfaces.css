@@ -1,0 +1,36 @@
+/* Focused brand accents; content surfaces remain neutral. */
+.service.is-open { background: #fff; border-color: #a8a0c1; }
+.service .detail-button {
+  min-height: 54px;
+  padding: 15px 20px;
+  border: 0;
+  background: var(--ink);
+  color: #fff;
+  transition: background-color .18s ease;
+}
+.service .detail-button:hover { background: #403477; color: #fff; }
+.service .detail-button:focus-visible { outline-offset: 4px; }
+.service .detail-button svg { color: #e2daf1; }
+.partner-grid .chips span { background: var(--ink); color: #fff; }
+.about .large-copy { padding-left: 24px; border-left: 3px solid var(--green); }
+@media (prefers-reduced-motion: reduce) {
+  .service .detail-button { transition: none; }
+}
+
+.steps { gap: 28px; }
+.steps article { position: relative; padding: 26px 22px 24px; border: 1px solid var(--line); background: #fff; }
+.step-number { justify-content: flex-start; gap: 14px; min-height: 58px; padding: 0; border: 0; background: transparent; }
+.step-number > span { display: grid; place-items: center; flex-shrink: 0; width: 46px; height: 52px; background: var(--ink); color: #fff; border-radius: 3px 3px 14px 3px; font-size: 1.4rem; letter-spacing: -.04em; }
+.steps .step-number h3 { min-width: 0; margin: 0; color: var(--ink); font-size: 1.0625rem; font-weight: 600; line-height: 1.4; }
+.step-number > svg { display: none; }
+.steps article::after { content: ''; position: absolute; z-index: 1; width: 29px; height: 1px; right: -29px; top: 52px; background: #b7aecb; }
+.steps article:last-child::after { display: none; }
+.steps p { margin: 24px 0 0; padding-top: 20px; border-top: 1px solid #eeebf2; font-size: .9375rem; line-height: 1.8; }
+@media (min-width: 681px) and (max-width: 950px) {
+  .steps article:nth-child(2)::after { display: none; }
+}
+@media (max-width: 680px) {
+  .steps { gap: 20px; }
+  .steps article { padding: 22px; }
+  .steps article::after { width: 1px; height: 21px; left: 45px; top: auto; bottom: -21px; }
+}
