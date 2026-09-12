@@ -141,6 +141,19 @@ h2 { margin: 16px 0 0; font-size: clamp(2rem, 3vw, 2.875rem); line-height: 1.23;
 .contact-details a > svg:last-child { margin-left: auto; }
 .contact-details span { min-width: 0; overflow-wrap: anywhere; }
 .contact-details small { display: block; margin-bottom: 6px; font-size: .75rem; letter-spacing: .12em; color: #d1c8de; }
+.email-dialog { width: min(560px, calc(100% - 32px)); max-width: none; padding: 0; border: 0; background: transparent; color: var(--ink); }
+.email-dialog::backdrop { background: #17132dcc; backdrop-filter: blur(6px); }
+.email-dialog-card { position: relative; padding: 42px; background: #fff; border-top: 5px solid #8e84b5; box-shadow: 0 28px 80px #1511294d; }
+.email-dialog-close { position: absolute; top: 18px; right: 18px; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid var(--line); background: #fff; color: var(--ink); }
+.email-dialog-close:hover { background: var(--surface); }
+.email-dialog-icon { display: grid; place-items: center; width: 52px; height: 52px; margin-bottom: 26px; background: var(--ink); color: #fff; }
+.email-dialog h2 { margin-top: 12px; font-size: clamp(1.8rem, 5vw, 2.5rem); }
+.email-dialog p { margin: 18px 0 22px; }
+.email-dialog-address { padding: 18px 20px; border-left: 3px solid #8e84b5; background: var(--surface); font-size: 1.05rem; font-weight: 600; overflow-wrap: anywhere; }
+.email-dialog-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.email-dialog-actions .button { flex: 1 1 210px; border: 0; }
+.email-app-link { border: 1px solid var(--ink) !important; background: #fff; }
+.email-app-link:hover { background: var(--surface); }
 .footer-top { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 42px 0; }
 .footer-top p { font-size: .875rem; }
 .footer-contact { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 28px; padding: 32px 0 36px; border-top: 1px solid var(--line); font-size: .9375rem; line-height: 1.7; }
@@ -187,6 +200,9 @@ h2 { margin: 16px 0 0; font-size: clamp(2rem, 3vw, 2.875rem); line-height: 1.23;
   .footer-contact { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
 @media (max-width: 680px) {
+  .email-dialog-card { padding: 34px 22px 24px; }
+  .email-dialog-icon { margin-bottom: 22px; }
+  .email-dialog-actions .button { flex-basis: 100%; }
   .container { width: calc(100% - 40px); }
   .header-inner { gap: 8px; }
   .brand { gap: 8px; font-size: .78rem; }
@@ -257,4 +273,32 @@ header .brand-image { width: 124px; height: 124px; }
 @media (max-width: 680px) {
   header .brand { width: 64px; height: 52px; }
   header .brand-image { width: 108px; height: 108px; }
+}
+
+/* Compact brand signature and spacious, usable contact links. */
+footer.container { padding-top: 48px; }
+.footer-top { padding: 0 0 32px; align-items: center; }
+.footer-identity { display: flex; align-items: center; gap: 20px; min-width: 0; }
+footer .brand { width: 76px; height: 68px; }
+footer .brand-image { width: 138px; height: 138px; }
+.footer-wordmark strong { display: block; font-family: Manrope,sans-serif; font-size: 1.5rem; font-weight: 600; color: var(--ink); letter-spacing: -.04em; }
+.footer-wordmark > span { display: block; font-size: .75rem; letter-spacing: .06em; margin-top: 3px; color: var(--muted); }
+.footer-top .footer-wordmark p { display: block; font-size: .8125rem; margin: 10px 0 0; }
+.footer-top > .text-link { min-height: 44px; padding: 10px 15px; border: 1px solid var(--line); }
+.footer-contact { padding: 28px 0; gap: 28px; }
+.footer-contact > * { border-left: 2px solid #d7cde5; padding-left: 18px; min-width: 0; }
+.footer-label { margin-bottom: 4px; font-size: .6875rem; }
+.footer-contact a { display: block; min-height: 44px; padding: 10px 0; line-height: 1.7; }
+.footer-contact a svg { vertical-align: middle; margin-left: 5px; color: var(--green); }
+.footer-bottom { justify-content: flex-start; gap: 12px 28px; padding: 22px 0; font-size: .6875rem; }
+.footer-bottom > span:first-child { margin-right: auto; }
+@media(max-width:680px) {
+  footer.container { padding-top: 32px; }
+  .footer-top { flex-wrap: wrap; gap: 22px; padding-bottom: 26px; }
+  .footer-identity { gap: 12px; }
+  .footer-wordmark strong { font-size: 1.25rem; }
+  .footer-wordmark > span { font-size: .625rem; }
+  .footer-contact { grid-template-columns: 1fr; gap: 18px; }
+  .footer-bottom { flex-direction: column; gap: 9px; }
+  .footer-bottom > span:first-child { margin-right: 0; }
 }

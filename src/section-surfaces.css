@@ -11,7 +11,24 @@
 .service .detail-button:hover { background: #403477; color: #fff; }
 .service .detail-button:focus-visible { outline-offset: 4px; }
 .service .detail-button svg { color: #e2daf1; }
-.partner-grid .chips span { background: var(--ink); color: #fff; }
+.partner-grid .chips { display: grid; gap: 9px; }
+.partner-grid .chips span {
+  position: relative;
+  padding: 0 0 0 18px;
+  background: transparent;
+  color: #504b5d;
+  line-height: 1.55;
+}
+.partner-grid .chips span::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: .55em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #8e84b5;
+}
 .about .large-copy { padding-left: 24px; border-left: 3px solid var(--green); }
 @media (prefers-reduced-motion: reduce) {
   .service .detail-button { transition: none; }

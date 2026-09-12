@@ -114,9 +114,46 @@ export default function App() {
     }
   }, [language]);
   const [menu, setMenu] = useState(false);
-  const [open, setOpen] = useState(null);
+  const [openServices, setOpenServices] = useState([]);
+  const [emailDialog, setEmailDialog] = useState(null);
+  const [emailCopied, setEmailCopied] = useState(false);
   const headerRef = useRef(null);
   const menuButtonRef = useRef(null);
+  const emailDialogRef = useRef(null);
+  const toggleService = (index) => {
+    setOpenServices((current) =>
+      current.includes(index)
+        ? current.filter((item) => item !== index)
+        : [...current, index],
+    );
+  };
+  const openEmailDialog = (event, email, subject) => {
+    event.preventDefault();
+    setEmailCopied(false);
+    setEmailDialog({ email, subject });
+  };
+  const copyEmail = async () => {
+    if (!emailDialog) return;
+    try {
+      await navigator.clipboard.writeText(emailDialog.email);
+    } catch {
+      const field = document.createElement("textarea");
+      field.value = emailDialog.email;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.opacity = "0";
+      document.body.appendChild(field);
+      field.select();
+      document.execCommand("copy");
+      field.remove();
+    }
+    setEmailCopied(true);
+  };
+  useEffect(() => {
+    if (emailDialog && !emailDialogRef.current?.open) {
+      emailDialogRef.current?.showModal();
+    }
+  }, [emailDialog]);
   useEffect(() => {
     if (!menu) return;
     const closeOnEscape = (event) => {
@@ -283,9 +320,10 @@ export default function App() {
             </p>
           </div>
           <div className="service-grid">
-            {services.map((s, i) => (
-              <article
-                className={"service " + (open === i ? "is-open" : "")}
+            {services.map((s, i) => {
+              const isOpen = openServices.includes(i);
+              return <article
+                className={"service " + (isOpen ? "is-open" : "")}
                 key={s.title}
               >
                 <div className="service-top">
@@ -297,22 +335,22 @@ export default function App() {
                 <p>{t(s.text)}</p>
                 <button
                   className="detail-button"
-                  aria-expanded={open === i}
+                  aria-expanded={isOpen}
                   aria-controls={"details-" + i}
-                  onClick={() => setOpen(open === i ? null : i)}
+                  onClick={() => toggleService(i)}
                 >
                   {t("Hizmet kapsamı")}{" "}
-                  {open === i ? <Minus size={18} /> : <Plus size={18} />}
+                  {isOpen ? <Minus size={18} /> : <Plus size={18} />}
                 </button>
-                <div id={"details-" + i} hidden={open !== i}>
+                <div id={"details-" + i} hidden={!isOpen}>
                   <ul>
                     {s.items.map((item) => (
                       <li key={item}>{t(item)}</li>
                     ))}
                   </ul>
                 </div>
-              </article>
-            ))}
+              </article>;
+            })}
           </div>
         </section>
         <section className="partners section" id="is-ortaklari">
@@ -506,6 +544,13 @@ export default function App() {
                   "mailto:info@koese-uvw.de?subject=" +
                   encodeURIComponent(t("Ücretsiz ön görüşme"))
                 }
+                onClick={(event) =>
+                  openEmailDialog(
+                    event,
+                    "info@koese-uvw.de",
+                    t("Ücretsiz ön görüşme"),
+                  )
+                }
               >
                 {t("Ücretsiz ön görüşme")} <ArrowUpRight size={19} />
               </a>
@@ -518,34 +563,94 @@ export default function App() {
                 </span>
                 <ArrowUpRight size={21} />
               </a>
-              <a href="mailto:info@koese-uvw.de">
+              <a
+                href="mailto:info@koese-uvw.de"
+                onClick={(event) =>
+                  openEmailDialog(event, "info@koese-uvw.de", t("BİZE YAZIN"))
+                }
+              >
                 <Mail size={21} />
                 <span>
                   <small>{t("BİZE YAZIN")}</small>info@koese-uvw.de
                 </span>
                 <ArrowUpRight size={21} />
               </a>
-              <a href="mailto:lohn@koese-uvw.de">
+              <a
+                href="mailto:lohn@koese-uvw.de"
+                onClick={(event) =>
+                  openEmailDialog(
+                    event,
+                    "lohn@koese-uvw.de",
+                    t("BORDRO İŞLEMLERİ"),
+                  )
+                }
+              >
                 <Users size={21} />
                 <span>
                   <small>{t("BORDRO İŞLEMLERİ")}</small>lohn@koese-uvw.de
                 </span>
                 <ArrowUpRight size={21} />
               </a>
-              <div>
-                <MapPin size={21} />
-                <span>
+              <a href="https://www.google.com/maps/search/?api=1&amp;query=Bernburger%20Str.%2032%2C%2010963%20Berlin" target="_blank" rel="noopener noreferrer"><MapPin size={21} /><span>
                   <small>{t("ADRESİMİZ")}</small>Bernburger Str. 32
                   <br />
                   10963 Berlin
-                </span>
-              </div>
+                </span><ArrowUpRight size={21} aria-hidden="true" /></a>
             </div>
           </div>
         </section>
       </main>
+      <dialog
+        ref={emailDialogRef}
+        className="email-dialog"
+        aria-labelledby="email-dialog-title"
+        onClose={() => {
+          setEmailDialog(null);
+          setEmailCopied(false);
+        }}
+        onClick={(event) => {
+          if (event.target === emailDialogRef.current) {
+            emailDialogRef.current.close();
+          }
+        }}
+      >
+        {emailDialog && (
+          <div className="email-dialog-card">
+            <button
+              className="email-dialog-close"
+              type="button"
+              aria-label={t("Kapat")}
+              onClick={() => emailDialogRef.current?.close()}
+            >
+              <X size={20} />
+            </button>
+            <div className="email-dialog-icon" aria-hidden="true">
+              <Mail size={25} />
+            </div>
+            <div className="eyebrow">{t("E-POSTA İLE İLETİŞİM")}</div>
+            <h2 id="email-dialog-title">{t("Size nasıl yardımcı olabiliriz?")}</h2>
+            <p>{t("E-posta adresini kopyalayabilir veya e-posta uygulamanızı açabilirsiniz.")}</p>
+            <div className="email-dialog-address">{emailDialog.email}</div>
+            <div className="email-dialog-actions">
+              <button className="button primary" type="button" onClick={copyEmail}>
+                {t(emailCopied ? "E-posta adresi kopyalandı" : "E-posta adresini kopyala")}
+              </button>
+              <a
+                className="button email-app-link"
+                href={
+                  `mailto:${emailDialog.email}?subject=` +
+                  encodeURIComponent(emailDialog.subject)
+                }
+              >
+                {t("E-posta uygulamasını aç")} <ArrowUpRight size={18} />
+              </a>
+            </div>
+          </div>
+        )}
+      </dialog>
       <footer className="container">
         <div className="footer-top">
+<div className="footer-identity">
           <a className="brand" href="#">
             <img
               className="brand-image"
@@ -555,29 +660,24 @@ export default function App() {
               height="500"
             />
           </a>
-          <p>{t("Rakamlar. Yapılar. Çözümler.")}</p>
+          <div className="footer-wordmark"><strong>Hakan Köse</strong><span>Unternehmensverwaltung</span><p>{t("Rakamlar. Yapılar. Çözümler.")}</p></div></div>
           <a className="text-link" href="#">
             {t("Başa dön ↑")}
           </a>
         </div>
         <div className="footer-contact">
-          <address>
-            <span className="footer-label">{t("ADRESİMİZ")}</span>Bernburger
-            Str. 32
-            <br />
-            10963 Berlin
-          </address>
+          <address><span className="footer-label">{t("ADRESİMİZ")}</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Bernburger%20Str.%2032%2C%2010963%20Berlin" target="_blank" rel="noopener noreferrer">Bernburger Str. 32<br />10963 Berlin <ArrowUpRight size={16} aria-hidden="true" /></a></address>
           <div>
             <span className="footer-label">{t("BİZİ ARAYIN")}</span>
             <a href="tel:+493042802636">030 / 42 80 26 36</a>
           </div>
           <div>
             <span className="footer-label">{t("BİZE YAZIN")}</span>
-            <a href="mailto:info@koese-uvw.de">info@koese-uvw.de</a>
+            <a href="mailto:info@koese-uvw.de" onClick={(event) => openEmailDialog(event, "info@koese-uvw.de", t("BİZE YAZIN"))}>info@koese-uvw.de</a>
           </div>
           <div>
             <span className="footer-label">{t("BORDRO İŞLEMLERİ")}</span>
-            <a href="mailto:lohn@koese-uvw.de">lohn@koese-uvw.de</a>
+            <a href="mailto:lohn@koese-uvw.de" onClick={(event) => openEmailDialog(event, "lohn@koese-uvw.de", t("BORDRO İŞLEMLERİ"))}>lohn@koese-uvw.de</a>
           </div>
         </div>
         <div className="footer-bottom">
@@ -591,6 +691,4 @@ export default function App() {
     </>
   );
 }
-
-
 

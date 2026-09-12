@@ -18,3 +18,7 @@
   .since { right: -14px; bottom: 78px; width: 116px; height: 97px; }
   .panel-bottom { padding-top: 17px; }
 }
+@media(max-width:680px) {
+  .hero-panel { display: flex; flex-direction: column; }
+  .hero-panel .since { position: relative; right: auto; bottom: auto; align-self: flex-end; margin: 26px -36px 0 0; flex-shrink: 0; }
+}
