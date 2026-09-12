@@ -26,6 +26,7 @@ import {
   readLanguage,
   metadata,
 } from "./translations.js";
+import { legalContent } from "./legalContent.js";
 
 const nav = [
   ["Ana Sayfa", "main"],
@@ -117,9 +118,14 @@ export default function App() {
   const [openServices, setOpenServices] = useState([]);
   const [emailDialog, setEmailDialog] = useState(null);
   const [emailCopied, setEmailCopied] = useState(false);
+  const [phoneDialog, setPhoneDialog] = useState(false);
+  const [phoneCopied, setPhoneCopied] = useState(false);
+  const [legalPage, setLegalPage] = useState(null);
   const headerRef = useRef(null);
   const menuButtonRef = useRef(null);
   const emailDialogRef = useRef(null);
+  const phoneDialogRef = useRef(null);
+  const legalDialogRef = useRef(null);
   const toggleService = (index) => {
     setOpenServices((current) =>
       current.includes(index)
@@ -132,13 +138,12 @@ export default function App() {
     setEmailCopied(false);
     setEmailDialog({ email, subject });
   };
-  const copyEmail = async () => {
-    if (!emailDialog) return;
+  const copyValue = async (value) => {
     try {
-      await navigator.clipboard.writeText(emailDialog.email);
+      await navigator.clipboard.writeText(value);
     } catch {
       const field = document.createElement("textarea");
-      field.value = emailDialog.email;
+      field.value = value;
       field.setAttribute("readonly", "");
       field.style.position = "fixed";
       field.style.opacity = "0";
@@ -147,13 +152,37 @@ export default function App() {
       document.execCommand("copy");
       field.remove();
     }
+  };
+  const copyEmail = async () => {
+    if (!emailDialog) return;
+    await copyValue(emailDialog.email);
     setEmailCopied(true);
+  };
+  const openPhoneDialog = (event) => {
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    event.preventDefault();
+    setPhoneCopied(false);
+    setPhoneDialog(true);
+  };
+  const copyPhone = async () => {
+    await copyValue("+49 30 42 80 26 36");
+    setPhoneCopied(true);
   };
   useEffect(() => {
     if (emailDialog && !emailDialogRef.current?.open) {
       emailDialogRef.current?.showModal();
     }
   }, [emailDialog]);
+  useEffect(() => {
+    if (phoneDialog && !phoneDialogRef.current?.open) {
+      phoneDialogRef.current?.showModal();
+    }
+  }, [phoneDialog]);
+  useEffect(() => {
+    if (legalPage && !legalDialogRef.current?.open) {
+      legalDialogRef.current?.showModal();
+    }
+  }, [legalPage]);
   useEffect(() => {
     if (!menu) return;
     const closeOnEscape = (event) => {
@@ -327,10 +356,12 @@ export default function App() {
                 key={s.title}
               >
                 <div className="service-top">
-                  <s.icon size={28} strokeWidth={1.3} />
+                  <div className="service-heading">
+                    <s.icon size={28} strokeWidth={1.3} />
+                    <h3>{t(s.title)}</h3>
+                  </div>
                   <span>0{i + 1}</span>
                 </div>
-                <h3>{t(s.title)}</h3>
                 <strong className="tagline">{t(s.tag)}</strong>
                 <p>{t(s.text)}</p>
                 <button
@@ -339,8 +370,10 @@ export default function App() {
                   aria-controls={"details-" + i}
                   onClick={() => toggleService(i)}
                 >
-                  {t("Hizmet kapsamı")}{" "}
-                  {isOpen ? <Minus size={18} /> : <Plus size={18} />}
+                  <span>{t(isOpen ? "Detayları kapat" : "Detayları görüntüle")}</span>
+                  <span className="detail-button-icon" aria-hidden="true">
+                    {isOpen ? <Minus size={17} /> : <Plus size={17} />}
+                  </span>
                 </button>
                 <div id={"details-" + i} hidden={!isOpen}>
                   <ul>
@@ -368,40 +401,48 @@ export default function App() {
             </div>
             <div className="partner-grid">
               <article>
-                <Scale size={29} strokeWidth={1.4} />
-                <h3>{t("Vergi hukuku ve hukuki destek")}</h3>
-                <p>
-                  {t(
-                    "Vergi hukuku alanında çalışan bir avukatla iş birliğimiz; kısa iletişim yolları, doğrudan koordinasyon ve ek uzmanlık sağlar.",
-                  )}
-                </p>
-                <div className="chips">
-                  <span>{t("Doğrudan koordinasyon")}</span>
-                  <span>{t("Profesyonel destek")}</span>
+                <div className="partner-card-heading">
+                  <Scale size={29} strokeWidth={1.4} />
+                  <h3>{t("Vergi hukuku ve hukuki destek")}</h3>
                 </div>
-                <small>
-                  {t(
-                    "Vergi hukuku danışmanlığı ve hukuki temsil ilgili avukat tarafından sağlanır.",
-                  )}
-                </small>
+                <div className="partner-card-body">
+                  <p>
+                    {t(
+                      "Vergi hukuku alanında çalışan bir avukatla iş birliğimiz; kısa iletişim yolları, doğrudan koordinasyon ve ek uzmanlık sağlar.",
+                    )}
+                  </p>
+                  <div className="chips">
+                    <span>{t("Doğrudan koordinasyon")}</span>
+                    <span>{t("Profesyonel destek")}</span>
+                  </div>
+                  <small>
+                    {t(
+                      "Vergi hukuku danışmanlığı ve hukuki temsil ilgili avukat tarafından sağlanır.",
+                    )}
+                  </small>
+                </div>
               </article>
               <article>
-                <ShieldCheck size={29} strokeWidth={1.4} />
-                <h3>{t("Sigorta ve işletme güvencesi")}</h3>
-                <p>
-                  {t(
-                    "İşletme güvenceleri, mesleki riskler, şirket sigortaları, kişi ve mal sigortaları için sizi yetkin bir sigorta brokeriyle buluşturuyoruz.",
-                  )}
-                </p>
-                <div className="chips">
-                  <span>{t("İşletme güvenceleri")}</span>
-                  <span>{t("Bireysel güvence konseptleri")}</span>
+                <div className="partner-card-heading">
+                  <ShieldCheck size={29} strokeWidth={1.4} />
+                  <h3>{t("Sigorta ve işletme güvencesi")}</h3>
                 </div>
-                <small>
-                  {t(
-                    "Sigorta danışmanlığı ve aracılık hizmeti ilgili sigorta brokeri tarafından sağlanır.",
-                  )}
-                </small>
+                <div className="partner-card-body">
+                  <p>
+                    {t(
+                      "İşletme güvenceleri, mesleki riskler, şirket sigortaları, kişi ve mal sigortaları için sizi yetkin bir sigorta brokeriyle buluşturuyoruz.",
+                    )}
+                  </p>
+                  <div className="chips">
+                    <span>{t("İşletme güvenceleri")}</span>
+                    <span>{t("Bireysel güvence konseptleri")}</span>
+                  </div>
+                  <small>
+                    {t(
+                      "Sigorta danışmanlığı ve aracılık hizmeti ilgili sigorta brokeri tarafından sağlanır.",
+                    )}
+                  </small>
+                </div>
               </article>
             </div>
           </div>
@@ -556,7 +597,7 @@ export default function App() {
               </a>
             </div>
             <div className="contact-details">
-              <a href="tel:+493042802636">
+              <a href="tel:+493042802636" onClick={openPhoneDialog}>
                 <Phone size={21} />
                 <span>
                   <small>{t("BİZİ ARAYIN")}</small>030 / 42 80 26 36
@@ -648,44 +689,89 @@ export default function App() {
           </div>
         )}
       </dialog>
-      <footer className="container">
-        <div className="footer-top">
-<div className="footer-identity">
-          <a className="brand" href="#">
-            <img
-              className="brand-image"
-              src="/img/hklogo.jpeg"
-              alt="Hakan Köse Unternehmensverwaltung"
-              width="500"
-              height="500"
-            />
-          </a>
-          <div className="footer-wordmark"><strong>Hakan Köse</strong><span>Unternehmensverwaltung</span><p>{t("Rakamlar. Yapılar. Çözümler.")}</p></div></div>
-          <a className="text-link" href="#">
-            {t("Başa dön ↑")}
-          </a>
+      <dialog
+        ref={phoneDialogRef}
+        className="email-dialog"
+        aria-labelledby="phone-dialog-title"
+        onClose={() => {
+          setPhoneDialog(false);
+          setPhoneCopied(false);
+        }}
+        onClick={(event) => {
+          if (event.target === phoneDialogRef.current) {
+            phoneDialogRef.current.close();
+          }
+        }}
+      >
+        <div className="email-dialog-card">
+          <button
+            className="email-dialog-close"
+            type="button"
+            aria-label={t("Kapat")}
+            onClick={() => phoneDialogRef.current?.close()}
+          >
+            <X size={20} />
+          </button>
+          <div className="email-dialog-icon" aria-hidden="true">
+            <Phone size={25} />
+          </div>
+          <div className="eyebrow">{t("TELEFON İLE İLETİŞİM")}</div>
+          <h2 id="phone-dialog-title">{t("Bizi arayın")}</h2>
+          <p>{t("Telefon numarasını kopyalayabilir veya telefon uygulamanızı açabilirsiniz.")}</p>
+          <div className="email-dialog-address">030 / 42 80 26 36</div>
+          <div className="email-dialog-actions">
+            <button className="button primary" type="button" onClick={copyPhone}>
+              {t(phoneCopied ? "Telefon numarası kopyalandı" : "Telefon numarasını kopyala")}
+            </button>
+            <a className="button email-app-link" href="tel:+493042802636">
+              {t("Telefon uygulamasını aç")} <ArrowUpRight size={18} />
+            </a>
+          </div>
         </div>
-        <div className="footer-contact">
-          <address><span className="footer-label">{t("ADRESİMİZ")}</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Bernburger%20Str.%2032%2C%2010963%20Berlin" target="_blank" rel="noopener noreferrer">Bernburger Str. 32<br />10963 Berlin <ArrowUpRight size={16} aria-hidden="true" /></a></address>
-          <div>
-            <span className="footer-label">{t("BİZİ ARAYIN")}</span>
-            <a href="tel:+493042802636">030 / 42 80 26 36</a>
+      </dialog>
+      <dialog
+        ref={legalDialogRef}
+        className="legal-dialog"
+        aria-labelledby="legal-dialog-title"
+        onClose={() => setLegalPage(null)}
+      >
+        {legalPage && (() => {
+          const document = legalContent[language][legalPage];
+          return <article className="legal-document">
+            <div className="legal-document-head">
+              <div>
+                <div className="eyebrow">{document.eyebrow}</div>
+                <h1 id="legal-dialog-title">{document.title}</h1>
+                <p>{document.intro}</p>
+              </div>
+              <button type="button" aria-label={t("Kapat")} onClick={() => legalDialogRef.current?.close()}><X size={22} /></button>
+            </div>
+            <div className="legal-document-body">
+              {document.sections.map(([title, paragraphs]) => <section key={title}>
+                <h2>{title}</h2>
+                {paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+              </section>)}
+            </div>
+          </article>;
+        })()}
+      </dialog>
+      <footer className="site-footer">
+        <div className="container footer-bar">
+          <div className="footer-legal">
+            <span>© {new Date().getFullYear()} Hakan Köse Unternehmensverwaltung</span>
+            <span>{t("Steuernummer: 14/391/00508")}</span>
+            <span>{t("USt-ID: DE321053398")}</span>
           </div>
-          <div>
-            <span className="footer-label">{t("BİZE YAZIN")}</span>
-            <a href="mailto:info@koese-uvw.de" onClick={(event) => openEmailDialog(event, "info@koese-uvw.de", t("BİZE YAZIN"))}>info@koese-uvw.de</a>
+          <div className="footer-actions">
+            <nav className="footer-legal-nav" aria-label={t("Yasal bağlantılar")}>
+              <a href="#impressum" onClick={(event) => { event.preventDefault(); setLegalPage("impressum"); }}>Impressum</a>
+              <a href="#datenschutz" onClick={(event) => { event.preventDefault(); setLegalPage("privacy"); }}>{t("Datenschutz")}</a>
+            </nav>
+            <span className="footer-credit">{t("Web tasarım ve geliştirme:")} <strong>Ömür Genç</strong></span>
+            <a className="footer-bar-back" href="#" aria-label={t("Başa dön")}>
+              <ArrowUpRight size={17} aria-hidden="true" />
+            </a>
           </div>
-          <div>
-            <span className="footer-label">{t("BORDRO İŞLEMLERİ")}</span>
-            <a href="mailto:lohn@koese-uvw.de" onClick={(event) => openEmailDialog(event, "lohn@koese-uvw.de", t("BORDRO İŞLEMLERİ"))}>lohn@koese-uvw.de</a>
-          </div>
-        </div>
-        <div className="footer-bottom">
-          <span>
-            © {new Date().getFullYear()} Hakan Köse Unternehmensverwaltung
-          </span>
-          <span>{t("Steuernummer: 14/391/00508")}</span>
-          <span>{t("USt-ID: DE321053398")}</span>
         </div>
       </footer>
     </>

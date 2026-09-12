@@ -7,7 +7,7 @@
 .panel-bottom svg { display: block; flex-shrink: 0; }
 .since { position: absolute; right: -22px; bottom: 101px; background: #d8cde8; color: #27213f; width: 130px; height: 111px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0; margin: 0; transform: rotate(-7deg); box-shadow: 0 6px 20px #0001; }
 .since strong { font-family: Manrope,sans-serif; font-size: 2.5rem; letter-spacing: -.06em; font-weight: 500; }
-.since span { font-size: .52rem; letter-spacing: .09em; color: #27213f; }
+.since span { width: 100%; padding-inline: 10px; font-size: .52rem; letter-spacing: .065em; line-height: 1.35; text-align: center; overflow-wrap: anywhere; color: #27213f; }
 @media(max-width:950px) {
   .hero-panel { padding: 25px; min-height: 460px; }
   .panel-title { font-size: 3.3rem; }
