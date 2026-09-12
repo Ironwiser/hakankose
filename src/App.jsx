@@ -245,16 +245,17 @@ export default function App() {
             <div className="hero-panel">
               <div className="panel-top">
                 <span>HAKAN KÖSE</span>
-                <span className="panel-location">BERLIN</span>
+                <span className="panel-cross" aria-hidden="true">+</span>
               </div>
-              <div className="panel-composition">
-                <div className="panel-word"><BookOpen aria-hidden="true" strokeWidth={1.25}/><span>{t("Rakamlar.")}</span></div>
-                <div className="panel-word"><Users aria-hidden="true" strokeWidth={1.25}/><span>{t("Yapılar.")}</span></div>
-                <div className="panel-word"><ChartNoAxesCombined aria-hidden="true" strokeWidth={1.25}/><span>{t("Çözümler.")}</span></div>
+              <div className="panel-title">
+                {t("Rakamlar.")}<br />
+                {t("Yapılar.")}<br />
+                <span>{t("Çözümler.")}</span>
               </div>
-              <div className="panel-signoff">
-                <p>{t("Ticari hayatınızda")}<br/>{t("sağlam bir temel.")}</p>
-                <div className="panel-year"><strong>2020</strong><span>{t("GÜVENLE, BİRLİKTE.")}</span></div>
+              <div className="panel-bottom"><span>{t("Ticari hayatınızda")}<br />{t("sağlam bir temel.")}</span><ArrowUpRight size={46} strokeWidth={1} aria-hidden="true" /></div>
+              <div className="since">
+                <strong>2020</strong>
+                <span>{t("GÜVENLE, BİRLİKTE.")}</span>
               </div>
             </div>
           </div>
@@ -590,4 +591,6 @@ export default function App() {
     </>
   );
 }
+
+
 
