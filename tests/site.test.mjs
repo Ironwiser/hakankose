@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
-import { readFile } from "node:fs/promises";
+import { readFile, access } from "node:fs/promises";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { build } from "esbuild";
@@ -19,6 +19,13 @@ const result = await build({
     {
       name: "require-complete-translations",
       setup(build) {
+        build.onLoad({ filter: /App\.jsx$/ }, async ({ path }) => ({
+          contents: (await readFile(path, "utf8")).replace(
+            "const [activeService, setActiveService] = useState(0);",
+            "const [activeService, setActiveService] = useState(globalThis.testServiceIndex ?? 0);",
+          ),
+          loader: "jsx",
+        }));
         build.onLoad({ filter: /translations\.js$/ }, async ({ path }) => ({
           contents: (await readFile(path, "utf8")).replace(
             "export function translate(key, language) {",
@@ -40,7 +47,9 @@ new Function("require", "module", "exports", result.outputFiles[0].text)(
 );
 
 for (const language of ["tr", "de", "en"])
-  test(`${language}: complete page, service details, footer and navigation`, () => {
+ for (const serviceIndex of [0, 1, 2, 3])
+  test(`${language}: service ${serviceIndex + 1}, contact, footer and navigation`, async () => {
+    globalThis.testServiceIndex = serviceIndex;
     globalThis.localStorage = { getItem: () => language };
     const html = renderToStaticMarkup(
       React.createElement(compiled.exports.default),
@@ -59,18 +68,22 @@ for (const language of ["tr", "de", "en"])
       "iletisim",
     ]);
     const footer = html.split("<footer")[1];
+    const contact = html.split('id="iletisim"')[1].split('</section>')[0];
     for (const text of [
       "Bernburger Str. 32",
       "10963 Berlin",
       "tel:+493042802636",
       "mailto:info@koese-uvw.de",
       "mailto:lohn@koese-uvw.de",
-      "14/391/00508",
-      "DE321053398",
     ])
+      assert.ok(contact.includes(text), text);
+    for (const text of ["14/391/00508", "DE321053398"])
       assert.ok(footer.includes(text), text);
-    assert.ok(html.includes(translate("İşletme planlaması", language)));
-    assert.ok(html.includes(translate("Likidite planlaması", language)));
+    const expectedItem = ["Yıl sonu kapanışının hazırlanmasına destek", "Aylık ücret ve maaş bordroları", "İş planı ve finansal planlama", "İşletme analizleri"][serviceIndex];
+    assert.ok(html.includes(translate(expectedItem, language)));
+    assert.ok(html.includes(`aria-labelledby="service-tab-${serviceIndex}"`));
+    for (const match of html.matchAll(/<img[^>]+src="(\/[^\"]+)"/g))
+      await access(`public${match[1]}`);
     assert.ok(
       html.includes(
         translate(

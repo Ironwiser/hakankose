@@ -4,6 +4,7 @@ export const languageNames = { tr: "Türkçe", de: "Deutsch", en: "English" };
 export const storageKey = "hakan-kose-language";
 
 const entries = [
+  ["Büyük ölçekli işletmeler", "Großunternehmen", "Large enterprises"],
   [
     "Rakamlarınız - düzenli, anlaşılır ve güvenilir.",
     "Ihre Zahlen – geordnet, verständlich und zuverlässig.",
@@ -80,6 +81,17 @@ const entries = [
   ["Kapat", "Schließen", "Close"],
   ["Detayları görüntüle", "Details anzeigen", "View details"],
   ["Detayları kapat", "Details schließen", "Close details"],
+  ["UZMAN AĞIMIZ", "UNSER EXPERTENNETZWERK", "OUR EXPERT NETWORK"],
+  [
+    "İhtiyacınız olduğunda doğru uzman masada.",
+    "Wenn Sie Expertise brauchen, sitzt der richtige Partner mit am Tisch.",
+    "When you need expertise, the right specialist is at the table.",
+  ],
+  [
+    "Profesyonel danışmanlık görüşmesi",
+    "Professionelles Beratungsgespräch",
+    "Professional consultation meeting",
+  ],
   ["TELEFON İLE İLETİŞİM", "KONTAKT PER TELEFON", "CONTACT BY PHONE"],
   ["Bizi arayın", "Rufen Sie uns an", "Call us"],
   [
@@ -492,6 +504,77 @@ const entries = [
     "Tax number: 14/391/00508",
   ],
   ["USt-ID: DE321053398", "USt-ID: DE321053398", "VAT ID: DE321053398"],
+  [
+    "Ücret ve maaş bordrolaması doğruluk, zamanında işlem ve hassas verilerin dikkatli şekilde ele alınmasını gerektirir. Devam eden bordro süreçlerinde size destek oluyor ve düzenli, güvenilir iş akışları sağlıyoruz.",
+    "Die Lohn- und Gehaltsabrechnung erfordert Genauigkeit, Pünktlichkeit und einen sorgfältigen Umgang mit sensiblen Daten. Wir unterstützen Sie in den laufenden Abrechnungsprozessen und sorgen für geregelte, zuverlässige Abläufe.",
+    "Payroll requires accuracy, timely processing and careful handling of sensitive data. We support your ongoing payroll processes and provide organised, reliable workflows.",
+  ],
+  [
+    "Serbest çalışmaya veya kendi işletmenizi kurmaya başlamak önemli bir adımdır. Girişimcilere ticari ve organizasyonel konularda eşlik ediyor, en başından sağlam bir temel oluşturmalarına yardımcı oluyoruz.",
+    "Der Schritt in die Selbstständigkeit oder zur Gründung eines eigenen Unternehmens ist bedeutend. Wir begleiten Gründerinnen und Gründer in kaufmännischen und organisatorischen Fragen und helfen, von Anfang an eine solide Grundlage zu schaffen.",
+    "Starting out as self-employed or founding your own business is a major step. We guide entrepreneurs through commercial and organisational matters and help build a solid foundation from the outset.",
+  ],
+  [
+    "Yalnızca tek tek rakamlara değil, işletmenin tamamına bakıyoruz. Yapıları iyileştirmek, potansiyelleri belirlemek ve işletmenizi geleceğe yönelik sağlam bir yapıya kavuşturmak için birlikte çalışıyoruz.",
+    "Wir betrachten nicht nur einzelne Zahlen, sondern das gesamte Unternehmen. Gemeinsam verbessern wir Strukturen, erkennen Potenziale und schaffen eine solide, zukunftsorientierte Grundlage.",
+    "We look beyond individual figures to the business as a whole. Together, we improve structures, identify potential and build a solid foundation for the future.",
+  ],
+  [
+    "İşletmelerin karşılaştığı zorluklar çok yönlüdür. Bu nedenle seçilmiş uzmanlardan oluşan güçlü bir iş ortağı ağıyla çalışıyoruz.",
+    "Die Herausforderungen von Unternehmen sind vielfältig. Deshalb arbeiten wir mit einem starken Netzwerk ausgewählter Fachleute zusammen.",
+    "Business challenges are varied. That is why we work with a strong network of carefully selected specialists.",
+  ],
+  ["Kısa iletişim yolları", "Kurze Kommunikationswege", "Direct communication"],
+  ["Ek vergi hukuku uzmanlığı", "Zusätzliche steuerrechtliche Expertise", "Additional tax-law expertise"],
+  ["Mesleki riskler", "Berufliche Risiken", "Professional risks"],
+  ["Şirket sigortaları", "Unternehmensversicherungen", "Company insurance"],
+  ["Kişi ve mal sigortaları", "Personen- und Sachversicherungen", "Personal and property insurance"],
+  [
+    "Amacımız, ticari ve idari görevlerinizde güvenilir ve kişisel destek sunmaktır.",
+    "Unser Ziel ist es, Sie bei Ihren kaufmännischen und administrativen Aufgaben zuverlässig und persönlich zu unterstützen.",
+    "Our goal is to provide reliable, personal support with your commercial and administrative tasks.",
+  ],
+  [
+    "Finansal muhasebe, bordrolama, şirket kuruluşu ve işletme danışmanlığında yanınızdayız; vergi hukuku, hukuki ve sigorta konularında iş ortağı ağımız üzerinden ek uzmanlığa ulaşmanızı sağlıyoruz.",
+    "Wir unterstützen Sie bei Finanzbuchhaltung, Lohnabrechnung, Existenzgründung und Unternehmensberatung; bei steuerrechtlichen, rechtlichen und versicherungsbezogenen Fragen vermitteln wir zusätzliche Expertise aus unserem Partnernetzwerk.",
+    "We support you with financial accounting, payroll, business formation and consulting, while our partner network provides additional expertise in tax law, legal and insurance matters.",
+  ],
+  [
+    "2020 yılındaki kuruluşumuzdan bu yana ticari ve idari konularda güvenilir bir muhatap olarak yanınızdayız.",
+    "Seit unserer Gründung im Jahr 2020 stehen wir unseren Kunden als zuverlässiger Ansprechpartner in kaufmännischen und administrativen Fragen zur Seite.",
+    "Since our founding in 2020, we have been a reliable contact for our clients in commercial and administrative matters.",
+  ],
+  [
+    "Bizim için müşteriler bir numaradan ibaret değildir. Kişisel ve güvene dayalı bir iş birliğine önem veriyoruz.",
+    "Für uns sind Kunden mehr als nur eine Nummer. Wir legen Wert auf eine persönliche und vertrauensvolle Zusammenarbeit.",
+    "To us, clients are more than a number. We value personal collaboration built on trust.",
+  ],
+  [
+    "NEDEN HAKAN KÖSE UNTERNEHMENSVERWALTUNG?",
+    "WARUM HAKAN KÖSE UNTERNEHMENSVERWALTUNG?",
+    "WHY HAKAN KÖSE UNTERNEHMENSVERWALTUNG?",
+  ],
+  [
+    "2020 yılındaki kuruluşumuzdan bu yana müşterilerimizin ticari ve idari konularında güvenilir bir muhatap olarak yanlarında yer alıyoruz.",
+    "Seit unserer Gründung im Jahr 2020 stehen wir unseren Kunden als zuverlässiger Ansprechpartner in kaufmännischen und administrativen Fragen zur Seite.",
+    "Since our founding in 2020, we have supported our clients as a reliable contact for commercial and administrative matters.",
+  ],
+  [
+    "Dijital süreçler verimli, hızlı ve kolay bir iş birliği sağlar.",
+    "Digitale Prozesse ermöglichen eine effiziente, schnelle und unkomplizierte Zusammenarbeit.",
+    "Digital processes enable efficient, fast and straightforward collaboration.",
+  ],
+  [
+    "Yalnızca tek tek muhasebe kayıtlarına değil, işletmenin ekonomik bağlantılarına ve genel yapısına bakıyoruz.",
+    "Wir betrachten nicht nur einzelne Buchungen, sondern auch die wirtschaftlichen Zusammenhänge und die Gesamtstruktur des Unternehmens.",
+    "We look beyond individual accounting entries to the business's economic connections and overall structure.",
+  ],
+  ["Güçlü ağ", "Starkes Netzwerk", "Strong network"],
+  [
+    "Vergi hukuku alanında bir avukat ve bir sigorta brokeriyle yaptığımız iş birlikleri sayesinde gerektiğinde ek uzmanlıktan yararlanabiliyoruz.",
+    "Durch unsere Zusammenarbeit mit einem Fachanwalt für Steuerrecht und einem Versicherungsmakler können wir bei Bedarf auf zusätzliche Expertise zurückgreifen.",
+    "Our cooperation with a tax-law attorney and an insurance broker gives us access to additional expertise when needed.",
+  ],
 ];
 
 export const translations = Object.fromEntries(

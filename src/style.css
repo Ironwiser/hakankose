@@ -23,7 +23,9 @@
   --footer-bar-height: 73px;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: var(--header-height); }
+html { scroll-behavior: smooth; }
+main,
+main > section[id] { scroll-margin-top: var(--header-height); }
 body { margin: 0; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; }

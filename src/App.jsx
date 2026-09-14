@@ -4,8 +4,6 @@ import {
   ArrowRight,
   Menu,
   X,
-  Plus,
-  Minus,
   BookOpen,
   Users,
   Sprout,
@@ -39,6 +37,7 @@ const nav = [
 const services = [
   {
     icon: BookOpen,
+    image: "/img/muhasebe-belgeleri.jpg",
     title: "Finansal muhasebe",
     tag: "Rakamlarınız - düzenli, anlaşılır ve güvenilir.",
     text: "Devam eden finansal muhasebe işlemlerinizi üstleniyor, ticari belgelerinizde düzen ve şeffaflık sağlıyoruz.",
@@ -53,9 +52,10 @@ const services = [
   },
   {
     icon: Users,
+    image: "/img/service-payroll-v2.jpg",
     title: "Bordro ve ücret muhasebesi",
     tag: "Sizin ve çalışanlarınız için güvenilir bordrolama.",
-    text: "Hassas verilerinizi özenle ele alıyor, sizin ve çalışanlarınız için düzenli ve güvenilir bordro süreçleri sağlıyoruz.",
+    text: "Ücret ve maaş bordrolaması doğruluk, zamanında işlem ve hassas verilerin dikkatli şekilde ele alınmasını gerektirir. Devam eden bordro süreçlerinde size destek oluyor ve düzenli, güvenilir iş akışları sağlıyoruz.",
     items: [
       "Aylık ücret ve maaş bordroları",
       "Bordro belgelerinin hazırlanması",
@@ -67,9 +67,10 @@ const services = [
   },
   {
     icon: Sprout,
+    image: "/img/service-startup-v2.jpg",
     title: "Şirket kuruluş danışmanlığı",
     tag: "Fikirden başarılı bir işletmeye.",
-    text: "İşletmenizi kurarken ticari ve organizasyonel konularda yanınızdayız. Birlikte, en başından sağlam bir temel oluşturuyoruz.",
+    text: "Serbest çalışmaya veya kendi işletmenizi kurmaya başlamak önemli bir adımdır. Girişimcilere ticari ve organizasyonel konularda eşlik ediyor, en başından sağlam bir temel oluşturmalarına yardımcı oluyoruz.",
     items: [
       "İş fikrinin geliştirilmesi ve yapılandırılması",
       "İş planı ve finansal planlama",
@@ -82,9 +83,10 @@ const services = [
   },
   {
     icon: ChartNoAxesCombined,
+    image: "/img/dijital-surecler.jpg",
     title: "İşletme danışmanlığı",
     tag: "İşletmeyi anlamak. Potansiyeli görmek. Geleceği şekillendirmek.",
-    text: "Tek tek rakamların ötesine bakıyor; işletmenizin ekonomik, finansal ve organizasyonel gelişimine destek oluyoruz.",
+    text: "Yalnızca tek tek rakamlara değil, işletmenin tamamına bakıyoruz. Yapıları iyileştirmek, potansiyelleri belirlemek ve işletmenizi geleceğe yönelik sağlam bir yapıya kavuşturmak için birlikte çalışıyoruz.",
     items: [
       "İşletme analizleri",
       "Maliyet ve gelir analizleri",
@@ -115,7 +117,7 @@ export default function App() {
     }
   }, [language]);
   const [menu, setMenu] = useState(false);
-  const [openServices, setOpenServices] = useState([]);
+  const [activeService, setActiveService] = useState(0);
   const [emailDialog, setEmailDialog] = useState(null);
   const [emailCopied, setEmailCopied] = useState(false);
   const [phoneDialog, setPhoneDialog] = useState(false);
@@ -126,13 +128,8 @@ export default function App() {
   const emailDialogRef = useRef(null);
   const phoneDialogRef = useRef(null);
   const legalDialogRef = useRef(null);
-  const toggleService = (index) => {
-    setOpenServices((current) =>
-      current.includes(index)
-        ? current.filter((item) => item !== index)
-        : [...current, index],
-    );
-  };
+  const selectedService = services[activeService];
+  const SelectedServiceIcon = selectedService.icon;
   const openEmailDialog = (event, email, subject) => {
     event.preventDefault();
     setEmailCopied(false);
@@ -289,9 +286,6 @@ export default function App() {
                 )}
               </p>
               <div className="actions">
-                <a className="button primary" href="#iletisim">
-                  {t("Ücretsiz ön görüşme")} <ArrowUpRight size={19} />
-                </a>
                 <a className="text-link" href="#hizmetler">
                   {t("Hizmetlerimizi inceleyin")} <ArrowRight size={18} />
                 </a>
@@ -334,6 +328,7 @@ export default function App() {
             <p>{t("Bağımsız çalışanlar")}</p>
             <i />
             <p>{t("Küçük ve orta ölçekli işletmeler")}</p>
+            <p>{t("Büyük ölçekli işletmeler")}</p>
           </div>
         </div>
         <section className="section container" id="hizmetler">
@@ -348,13 +343,16 @@ export default function App() {
               {t("İhtiyacınız olan desteği birlikte belirleyelim.")}
             </p>
           </div>
-          <div className="service-grid">
+          <div className="service-grid" role="tablist" aria-label={t("HİZMETLERİMİZ")}>
             {services.map((s, i) => {
-              const isOpen = openServices.includes(i);
+              const isActive = activeService === i;
               return <article
-                className={"service " + (isOpen ? "is-open" : "")}
+                className={"service " + (isActive ? "is-active" : "")}
                 key={s.title}
               >
+                <div className="service-image" aria-hidden="true">
+                  <img src={s.image} alt="" width="1536" height="1024" loading="lazy" />
+                </div>
                 <div className="service-top">
                   <div className="service-heading">
                     <s.icon size={28} strokeWidth={1.3} />
@@ -362,28 +360,44 @@ export default function App() {
                   </div>
                   <span>0{i + 1}</span>
                 </div>
-                <strong className="tagline">{t(s.tag)}</strong>
-                <p>{t(s.text)}</p>
                 <button
                   className="detail-button"
-                  aria-expanded={isOpen}
-                  aria-controls={"details-" + i}
-                  onClick={() => toggleService(i)}
+                  id={"service-tab-" + i}
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls="service-details"
+                  onClick={() => setActiveService(i)}
                 >
-                  <span>{t(isOpen ? "Detayları kapat" : "Detayları görüntüle")}</span>
+                  <span>{t("Detayları görüntüle")}</span>
                   <span className="detail-button-icon" aria-hidden="true">
-                    {isOpen ? <Minus size={17} /> : <Plus size={17} />}
+                    <ArrowRight size={16} />
                   </span>
                 </button>
-                <div id={"details-" + i} hidden={!isOpen}>
-                  <ul>
-                    {s.items.map((item) => (
-                      <li key={item}>{t(item)}</li>
-                    ))}
-                  </ul>
-                </div>
               </article>;
             })}
+          </div>
+          <div
+            className="service-detail-panel"
+            id="service-details"
+            role="tabpanel"
+            aria-labelledby={"service-tab-" + activeService}
+          >
+            <div className="service-detail-summary">
+              <div className="service-detail-heading">
+                <SelectedServiceIcon size={27} strokeWidth={1.35} />
+                <div>
+                  <span>0{activeService + 1} · {t("Hizmet kapsamı")}</span>
+                  <h3>{t(selectedService.title)}</h3>
+                </div>
+              </div>
+              <strong>{t(selectedService.tag)}</strong>
+              <p>{t(selectedService.text)}</p>
+            </div>
+            <ul>
+              {selectedService.items.map((item) => (
+                <li key={item}>{t(item)}</li>
+              ))}
+            </ul>
           </div>
         </section>
         <section className="partners section" id="is-ortaklari">
@@ -394,13 +408,47 @@ export default function App() {
                 <h2>{t("Birlikte daha fazlası.")}</h2>
               </div>
               <p>
-                {t("Farklı ihtiyaçlar, doğru uzmanlar.")}
-                <br />
-                {t("Seçilmiş iş ortaklarımızla yanınızdayız.")}
+                {t("İşletmelerin karşılaştığı zorluklar çok yönlüdür. Bu nedenle seçilmiş uzmanlardan oluşan güçlü bir iş ortağı ağıyla çalışıyoruz.")}
               </p>
             </div>
+            <div className="partner-feature">
+              <div className="partner-feature-media">
+                <img
+                  src="/img/partner-feature-v3.jpg"
+                  alt={t("Profesyonel danışmanlık görüşmesi")}
+                  width="1536"
+                  height="1024"
+                  loading="lazy"
+                />
+              </div>
+              <div className="partner-feature-copy">
+                <div className="eyebrow">{t("UZMAN AĞIMIZ")}</div>
+                <h3>{t("İhtiyacınız olduğunda doğru uzman masada.")}</h3>
+                <p>
+                  {t(
+                    "Vergi hukuku alanında çalışan bir avukatla iş birliğimiz; kısa iletişim yolları, doğrudan koordinasyon ve ek uzmanlık sağlar.",
+                  )}
+                </p>
+                <div className="partner-feature-focus">
+                  <Scale size={25} strokeWidth={1.4} />
+                  <div>
+                    <strong>{t("Vergi hukuku ve hukuki destek")}</strong>
+                    <span>{t("Doğrudan koordinasyon")}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="partner-grid">
-              <article>
+              <article className="partner-card partner-card-legal">
+                <div className="partner-card-image" aria-hidden="true">
+                  <img
+                    src="/img/partner-legal-v2.jpg"
+                    alt=""
+                    width="1536"
+                    height="1024"
+                    loading="lazy"
+                  />
+                </div>
                 <div className="partner-card-heading">
                   <Scale size={29} strokeWidth={1.4} />
                   <h3>{t("Vergi hukuku ve hukuki destek")}</h3>
@@ -412,7 +460,9 @@ export default function App() {
                     )}
                   </p>
                   <div className="chips">
+                    <span>{t("Kısa iletişim yolları")}</span>
                     <span>{t("Doğrudan koordinasyon")}</span>
+                    <span>{t("Ek vergi hukuku uzmanlığı")}</span>
                     <span>{t("Profesyonel destek")}</span>
                   </div>
                   <small>
@@ -423,6 +473,15 @@ export default function App() {
                 </div>
               </article>
               <article>
+                <div className="partner-card-image" aria-hidden="true">
+                  <img
+                    src="/img/partner-insurance-v2.jpg"
+                    alt=""
+                    width="1536"
+                    height="1024"
+                    loading="lazy"
+                  />
+                </div>
                 <div className="partner-card-heading">
                   <ShieldCheck size={29} strokeWidth={1.4} />
                   <h3>{t("Sigorta ve işletme güvencesi")}</h3>
@@ -435,6 +494,9 @@ export default function App() {
                   </p>
                   <div className="chips">
                     <span>{t("İşletme güvenceleri")}</span>
+                    <span>{t("Mesleki riskler")}</span>
+                    <span>{t("Şirket sigortaları")}</span>
+                    <span>{t("Kişi ve mal sigortaları")}</span>
                     <span>{t("Bireysel güvence konseptleri")}</span>
                   </div>
                   <small>
@@ -449,8 +511,8 @@ export default function App() {
         </section>
         <section className="why" id="neden-biz">
           <div className="container why-grid">
-            <div>
-              <div className="eyebrow">{t("NEDEN BİZ?")}</div>
+            <div className="why-intro">
+              <div className="eyebrow">{t("NEDEN HAKAN KÖSE UNTERNEHMENSVERWALTUNG?")}</div>
               <h2>
                 {t("Kişisel.")}
                 <br />
@@ -460,7 +522,7 @@ export default function App() {
               </h2>
               <p>
                 {t(
-                  "Bizim için bir müşteri numarasından fazlasısınız. İşletmenizi tanır, ihtiyaçlarınızı anlar ve uzun vadeli bir iş birliği kurarız.",
+                  "2020 yılındaki kuruluşumuzdan bu yana müşterilerimizin ticari ve idari konularında güvenilir bir muhatap olarak yanlarında yer alıyoruz.",
                 )}
               </p>
               <a className="text-link" href="#hakkimizda">
@@ -471,26 +533,33 @@ export default function App() {
               {[
                 [
                   "Kişisel hizmet",
-                  "Her aşamada ulaşabileceğiniz, işinizi ve hedeflerinizi tanıyan güvenilir bir muhatap.",
+                  "Bizim için müşteriler bir numaradan ibaret değildir. Kişisel ve güvene dayalı bir iş birliğine önem veriyoruz.",
+                  "/img/why-personal-v1.jpg",
                 ],
                 [
                   "Modern çalışma şekli",
-                  "Dijital süreçlerle verimli, hızlı ve kolay bir iş birliği.",
+                  "Dijital süreçler verimli, hızlı ve kolay bir iş birliği sağlar.",
+                  "/img/why-digital-v1.jpg",
                 ],
                 [
                   "Girişimci bakış açısı",
-                  "Yalnızca kayıtlara değil, işletmenizin ekonomik bağlantılarına ve bütününe odaklanırız.",
+                  "Yalnızca tek tek muhasebe kayıtlarına değil, işletmenin ekonomik bağlantılarına ve genel yapısına bakıyoruz.",
+                  "/img/why-entrepreneur-v1.jpg",
                 ],
                 [
-                  "Güçlü uzman ağı",
-                  "Gerektiğinde avukat ve sigorta brokeri iş ortaklarımızın uzmanlığına erişim.",
+                  "Güçlü ağ",
+                  "Vergi hukuku alanında bir avukat ve bir sigorta brokeriyle yaptığımız iş birlikleri sayesinde gerektiğinde ek uzmanlıktan yararlanabiliyoruz.",
+                  "/img/why-expert-v1.jpg",
                 ],
-              ].map(([title, desc], i) => (
+              ].map(([title, desc, image], i) => (
                 <div className="value" key={title}>
                   <span>0{i + 1}</span>
-                  <div>
+                  <div className="value-copy">
                     <h3>{t(title)}</h3>
                     <p>{t(desc)}</p>
+                  </div>
+                  <div className="value-image" aria-hidden="true">
+                    <img src={image} alt="" />
                   </div>
                 </div>
               ))}
@@ -509,24 +578,31 @@ export default function App() {
           </div>
           <div className="steps">
             {[
-              [
-                "Tanışma",
-                "Bağlayıcı olmayan ilk görüşmede işletmenizi, mevcut durumunuzu ve hedeflerinizi konuşuyoruz.",
-              ],
-              [
-                "İhtiyaç analizi",
-                "Hangi alanlarda destek olabileceğimizi birlikte değerlendiriyoruz.",
-              ],
-              [
-                "Çözüm geliştirme",
-                "Bireysel ihtiyaçlarınıza uygun, açık ve uygulanabilir bir yapı oluşturuyoruz.",
-              ],
-              [
-                "Birlikte uygulama",
-                "Siz gerekli belgeleri sağlıyorsunuz; biz üzerinde anlaştığımız ticari ve idari görevleri üstleniyoruz.",
-              ],
-            ].map(([title, text], i) => (
+                [
+                  "Tanışma",
+                  "Bağlayıcı olmayan ilk görüşmede işletmenizi, mevcut durumunuzu ve hedeflerinizi konuşuyoruz.",
+                  "/img/process-handshake-v1.jpg",
+                ],
+                [
+                  "İhtiyaç analizi",
+                  "Hangi alanlarda destek olabileceğimizi birlikte değerlendiriyoruz.",
+                  "/img/process-analysis-v1.jpg",
+                ],
+                [
+                  "Çözüm geliştirme",
+                  "Bireysel ihtiyaçlarınıza uygun, açık ve uygulanabilir bir yapı oluşturuyoruz.",
+                  "/img/process-solution-v1.jpg",
+                ],
+                [
+                  "Birlikte uygulama",
+                  "Siz gerekli belgeleri sağlıyorsunuz; biz üzerinde anlaştığımız ticari ve idari görevleri üstleniyoruz.",
+                  "/img/process-implementation-v1.jpg",
+                ],
+            ].map(([title, text, image], i) => (
               <article key={title}>
+                <div className="step-image" aria-hidden="true">
+                  <img src={image} alt="" />
+                </div>
                 <div className="step-number">
                     <span>0{i + 1}</span>
                     <h3>{t(title)}</h3>
@@ -539,30 +615,51 @@ export default function App() {
         </section>
 
         <section className="section container about" id="hakkimizda">
-          <div>
-            <div className="eyebrow">{t("HAKKIMIZDA")}</div>
-            <h2>
-              {t("about.line1")}
-              <br />
-              {t("about.line2")}
-            </h2>
-          </div>
-          <div>
-            <p className="large-copy">
-              {t("Sadece muhasebenizi değil,")}
-              <br />
-              <span>{t("işletmenizin bütününü düşünüyoruz.")}</span>
-            </p>
-            <p>
-              {t(
-                "Hakan Köse Unternehmensverwaltung olarak serbest meslek sahiplerine, bağımsız çalışanlara ve küçük ve orta ölçekli işletmelere ticari ve idari konularda destek veriyoruz.",
-              )}
-            </p>
-            <p>
-              {t(
-                "Güven, özen ve uzun vadeli iş birliği temel değerlerimiz. İşletmenizi anlamak, bağlantıları görmek ve günlük iş hayatında yükünüzü hafifletmek için buradayız.",
-              )}
-            </p>
+          <div className="about-media">
+            <img
+              src="/img/about-team-v2.jpg"
+              alt=""
+              width="1536"
+              height="1024"
+              loading="lazy"
+            />
+            <div className="about-overlay">
+              <div className="about-heading">
+                <div className="eyebrow">{t("HAKKIMIZDA")}</div>
+                <h2>
+                  {t("about.line1")}
+                  <br />
+                  {t("about.line2")}
+                </h2>
+              </div>
+              <div className="about-copy">
+                <p className="large-copy">
+                  {t("Sadece muhasebenizi değil,")}
+                  <br />
+                  <span>{t("işletmenizin bütününü düşünüyoruz.")}</span>
+                </p>
+                <p>
+                  {t(
+                    "Hakan Köse Unternehmensverwaltung olarak serbest meslek sahiplerine, bağımsız çalışanlara ve küçük ve orta ölçekli işletmelere ticari ve idari konularda destek veriyoruz.",
+                  )}
+                </p>
+                <p>
+                  {t(
+                    "Güven, özen ve uzun vadeli iş birliği temel değerlerimiz. İşletmenizi anlamak, bağlantıları görmek ve günlük iş hayatında yükünüzü hafifletmek için buradayız.",
+                  )}
+                </p>
+                <p>
+                  {t(
+                    "Amacımız, ticari ve idari görevlerinizde güvenilir ve kişisel destek sunmaktır.",
+                  )}
+                </p>
+                <p>
+                  {t(
+                    "Finansal muhasebe, bordrolama, şirket kuruluşu ve işletme danışmanlığında yanınızdayız; vergi hukuku, hukuki ve sigorta konularında iş ortağı ağımız üzerinden ek uzmanlığa ulaşmanızı sağlıyoruz.",
+                  )}
+                </p>
+              </div>
+            </div>
           </div>
         </section>
         <section className="contact" id="iletisim">
@@ -579,22 +676,6 @@ export default function App() {
                   "Finansal muhasebe, bordro, şirket kuruluşu veya işletme danışmanlığı. İlk görüşmede ihtiyacınızı birlikte değerlendirelim.",
                 )}
               </p>
-              <a
-                className="button light"
-                href={
-                  "mailto:info@koese-uvw.de?subject=" +
-                  encodeURIComponent(t("Ücretsiz ön görüşme"))
-                }
-                onClick={(event) =>
-                  openEmailDialog(
-                    event,
-                    "info@koese-uvw.de",
-                    t("Ücretsiz ön görüşme"),
-                  )
-                }
-              >
-                {t("Ücretsiz ön görüşme")} <ArrowUpRight size={19} />
-              </a>
             </div>
             <div className="contact-details">
               <a href="tel:+493042802636" onClick={openPhoneDialog}>

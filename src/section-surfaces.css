@@ -1,9 +1,17 @@
 /* Focused brand accents; content surfaces remain neutral. */
 .service.is-open { background: #fff; border-color: #a8a0c1; }
+.service-image {
+  height: 176px;
+  margin: -32px -32px 0;
+  overflow: hidden;
+  background: #e8e5ed;
+}
+.service-image img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .45s ease; }
+.service:hover .service-image img { transform: scale(1.025); }
 .service-top {
   align-items: center;
   min-height: 60px;
-  margin: -32px -32px 0;
+  margin: 0 -32px;
   padding: 6px 32px;
   background: var(--ink);
 }
@@ -36,6 +44,42 @@
 .service .detail-button[aria-expanded="true"] { border-color: #aca3c2; background: #ebe7f1; }
 .service .detail-button[aria-expanded="true"] .detail-button-icon { transform: rotate(180deg); }
 .partner-grid article { padding: 0; overflow: hidden; }
+.partner-feature {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  min-height: 360px;
+  margin-bottom: 24px;
+  background: var(--ink);
+  color: #fff;
+  overflow: hidden;
+}
+.partner-feature-media { position: relative; min-height: 360px; overflow: hidden; }
+.partner-feature-media > img { width: 100%; height: 100%; object-fit: cover; object-position: center 58%; display: block; }
+.partner-feature-media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 55%, #29234f40); pointer-events: none; }
+.partner-feature-brand {
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  padding: 8px;
+  background: #fffffff2;
+  box-shadow: 0 12px 32px #17132d33;
+}
+.partner-feature-brand img { width: 100%; height: 100%; object-fit: cover; }
+.partner-feature-copy { align-self: center; padding: 42px; }
+.partner-feature-copy .eyebrow { color: #d4c9e9; }
+.partner-feature-copy h3 { margin: 16px 0 18px; font-size: clamp(1.7rem, 2.6vw, 2.35rem); line-height: 1.25; font-weight: 500; text-wrap: balance; }
+.partner-feature-copy > p { margin: 0; color: #d7d2e2; font-size: .975rem; }
+.partner-feature-focus { display: flex; align-items: center; gap: 15px; margin-top: 28px; padding-top: 22px; border-top: 1px solid #ffffff2b; color: #d8cfeb; }
+.partner-feature-focus svg { flex-shrink: 0; }
+.partner-feature-focus strong, .partner-feature-focus span { display: block; }
+.partner-feature-focus strong { color: #fff; font-weight: 600; }
+.partner-feature-focus span { margin-top: 4px; font-size: .8125rem; color: #cfc6e4; }
+.partner-card-legal { border-color: #a8a0c1 !important; box-shadow: inset 0 3px 0 #8e84b5; }
 .partner-card-heading {
   display: flex;
   align-items: center;
@@ -84,7 +128,7 @@
   font-weight: 600;
 }
 @media (prefers-reduced-motion: reduce) {
-  .service .detail-button, .service .detail-button-icon, .value { transition: none; }
+  .service .detail-button, .service .detail-button-icon, .service-image img, .value { transition: none; }
 }
 
 .steps { gap: 28px; }
@@ -97,12 +141,18 @@
 .steps article:last-child::after { display: none; }
 .steps p { margin: 24px 0 0; padding-top: 20px; border-top: 1px solid #eeebf2; font-size: .9375rem; line-height: 1.8; }
 @media (min-width: 681px) and (max-width: 950px) {
-  .service-top { margin: -28px -28px 0; padding-inline: 28px; }
+  .service-image { margin: -28px -28px 0; }
+  .service-top { margin-inline: -28px; padding-inline: 28px; }
   .steps article:nth-child(2)::after { display: none; }
 }
 @media (max-width: 680px) {
-  .service-top { min-height: 60px; margin: -24px -24px 0; padding: 6px 24px; }
+  .service-image { height: 190px; margin: -24px -24px 0; }
+  .service-top { min-height: 60px; margin-inline: -24px; padding: 6px 24px; }
   .partner-card-heading { min-height: 60px; padding: 6px 22px; }
+  .partner-feature { grid-template-columns: 1fr; }
+  .partner-feature-media { min-height: 260px; }
+  .partner-feature-copy { padding: 28px 22px 30px; }
+  .partner-feature-brand { left: 18px; bottom: 18px; width: 64px; height: 64px; }
   .partner-card-body { padding: 24px 22px 26px; }
   .value { margin-inline: -10px; padding-inline: 10px; }
   .steps { gap: 20px; }
