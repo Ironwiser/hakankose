@@ -6,6 +6,7 @@ import "./hero-composition.css";
 import "./section-surfaces.css";
 import "./editorial-redesign.css";
 import "./scroll-reveal.css";
+import "./partners-compact.css";
 
 createRoot(document.getElementById("root")).render(<App />);
 

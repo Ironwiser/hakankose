@@ -52,7 +52,7 @@ const services = [
   },
   {
     icon: Users,
-    image: "/img/service-payroll-v2.jpg",
+    image: "/img/service-payroll-v3.png",
     title: "Bordro ve ücret muhasebesi",
     tag: "Sizin ve çalışanlarınız için güvenilir bordrolama.",
     text: "Ücret ve maaş bordrolaması doğruluk, zamanında işlem ve hassas verilerin dikkatli şekilde ele alınmasını gerektirir. Devam eden bordro süreçlerinde size destek oluyor ve düzenli, güvenilir iş akışları sağlıyoruz.",
@@ -118,6 +118,16 @@ export default function App() {
   }, [language]);
   const [menu, setMenu] = useState(false);
   const [activeService, setActiveService] = useState(0);
+  const [inlineServices, setInlineServices] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia("(max-width: 950px)").matches,
+  );
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 950px)");
+    const update = () => setInlineServices(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
   const [emailDialog, setEmailDialog] = useState(null);
   const [emailCopied, setEmailCopied] = useState(false);
   const [phoneDialog, setPhoneDialog] = useState(false);
@@ -138,22 +148,30 @@ export default function App() {
   const copyValue = async (value) => {
     try {
       await navigator.clipboard.writeText(value);
+      return true;
     } catch {
       const field = document.createElement("textarea");
       field.value = value;
       field.setAttribute("readonly", "");
       field.style.position = "fixed";
       field.style.opacity = "0";
-      document.body.appendChild(field);
-      field.select();
-      document.execCommand("copy");
-      field.remove();
+      const previousFocus = document.activeElement;
+      (document.querySelector("dialog[open]") || document.body).appendChild(field);
+      try {
+        field.focus();
+        field.select();
+        return document.execCommand("copy");
+      } catch {
+        return false;
+      } finally {
+        field.remove();
+        previousFocus?.focus();
+      }
     }
   };
   const copyEmail = async () => {
     if (!emailDialog) return;
-    await copyValue(emailDialog.email);
-    setEmailCopied(true);
+    setEmailCopied(await copyValue(emailDialog.email) ? true : "failed");
   };
   const openPhoneDialog = (event) => {
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
@@ -162,8 +180,7 @@ export default function App() {
     setPhoneDialog(true);
   };
   const copyPhone = async () => {
-    await copyValue("+49 30 42 80 26 36");
-    setPhoneCopied(true);
+    setPhoneCopied(await copyValue("+49 30 42 80 26 36") ? true : "failed");
   };
   useEffect(() => {
     if (emailDialog && !emailDialogRef.current?.open) {
@@ -290,6 +307,7 @@ export default function App() {
                   {t("Hizmetlerimizi inceleyin")} <ArrowRight size={18} />
                 </a>
               </div>
+              <p className="hero-audience-label">{t("İşinizin her aşamasında")}</p>
               <div className="hero-trust">
                 <span>
                   <Check size={15} /> {t("Kişisel hizmet")}
@@ -305,14 +323,24 @@ export default function App() {
             <div className="hero-panel">
               <div className="panel-top">
                 <span>HAKAN KÖSE</span>
-                <span className="panel-cross" aria-hidden="true">+</span>
+                <svg className="panel-ornament panel-ornament-orbit" viewBox="0 0 36 36" aria-hidden="true" focusable="false">
+                  <circle cx="14" cy="18" r="10" />
+                  <circle cx="22" cy="18" r="10" />
+                  <circle cx="18" cy="18" r="2" fill="currentColor" stroke="none" />
+                </svg>
               </div>
               <div className="panel-title">
                 {t("Rakamlar.")}<br />
                 {t("Yapılar.")}<br />
                 <span>{t("Çözümler.")}</span>
               </div>
-              <div className="panel-bottom"><span>{t("Ticari hayatınızda")}<br />{t("sağlam bir temel.")}</span><ArrowUpRight size={46} strokeWidth={1} aria-hidden="true" /></div>
+              <div className="panel-bottom">
+                <span>{t("Ticari hayatınızda")}<br />{t("sağlam bir temel.")}</span>
+                <svg className="panel-ornament panel-ornament-arcs" viewBox="0 0 64 48" aria-hidden="true" focusable="false">
+                  <path d="M8 40V28a24 24 0 0 1 48 0v12M16 40V28a16 16 0 0 1 32 0v12M24 40V28a8 8 0 0 1 16 0v12" />
+                  <path d="M4 44h56" opacity=".45" />
+                </svg>
+              </div>
               <div className="since">
                 <strong>2020</strong>
                 <span>{t("GÜVENLE, BİRLİKTE.")}</span>
@@ -322,13 +350,9 @@ export default function App() {
         </section>
         <div className="intro-strip">
           <div className="container">
-            <span>{t("İŞİNİZİN HER AŞAMASINDA")}</span>
             <p>{t("Serbest meslek sahipleri")}</p>
-            <i />
             <p>{t("Bağımsız çalışanlar")}</p>
-            <i />
             <p>{t("Küçük ve orta ölçekli işletmeler")}</p>
-            <p>{t("Büyük ölçekli işletmeler")}</p>
           </div>
         </div>
         <section className="section container" id="hizmetler">
@@ -343,11 +367,11 @@ export default function App() {
               {t("İhtiyacınız olan desteği birlikte belirleyelim.")}
             </p>
           </div>
-          <div className="service-grid" role="tablist" aria-label={t("HİZMETLERİMİZ")}>
+          <div className={"service-grid" + (inlineServices ? " service-grid-inline" : "")} role={inlineServices ? undefined : "tablist"} aria-label={t("HİZMETLERİMİZ")}>
             {services.map((s, i) => {
               const isActive = activeService === i;
               return <article
-                className={"service " + (isActive ? "is-active" : "")}
+                className={"service " + (!inlineServices && isActive ? "is-active" : "")}
                 key={s.title}
               >
                 <div className="service-image" aria-hidden="true">
@@ -360,23 +384,38 @@ export default function App() {
                   </div>
                   <span>0{i + 1}</span>
                 </div>
-                <button
+                {!inlineServices && <button
                   className="detail-button"
                   id={"service-tab-" + i}
                   role="tab"
+                  aria-label={t(s.title)}
                   aria-selected={isActive}
                   aria-controls="service-details"
+                  tabIndex={isActive ? 0 : -1}
                   onClick={() => setActiveService(i)}
+                  onKeyDown={(event) => {
+                    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+                    event.preventDefault();
+                    const next = event.key === "Home" ? 0 : event.key === "End" ? services.length - 1 :
+                      (i + (event.key === "ArrowRight" ? 1 : -1) + services.length) % services.length;
+                    setActiveService(next);
+                    document.getElementById("service-tab-" + next)?.focus();
+                  }}
                 >
                   <span>{t("Detayları görüntüle")}</span>
                   <span className="detail-button-icon" aria-hidden="true">
                     <ArrowRight size={16} />
                   </span>
-                </button>
+                </button>}
+                {inlineServices && <div className="service-inline-details">
+                  <strong>{t(s.tag)}</strong>
+                  <p>{t(s.text)}</p>
+                  <ul>{s.items.map(item => <li key={item}>{t(item)}</li>)}</ul>
+                </div>}
               </article>;
             })}
           </div>
-          <div
+          {!inlineServices && <div
             className="service-detail-panel"
             id="service-details"
             role="tabpanel"
@@ -398,7 +437,7 @@ export default function App() {
                 <li key={item}>{t(item)}</li>
               ))}
             </ul>
-          </div>
+          </div>}
         </section>
         <section className="partners section" id="is-ortaklari">
           <div className="container">
@@ -617,7 +656,7 @@ export default function App() {
         <section className="section container about" id="hakkimizda">
           <div className="about-media">
             <img
-              src="/img/about-team-v2.jpg"
+              src="/img/about-team-v3.png"
               alt=""
               width="1536"
               height="1024"
@@ -638,6 +677,7 @@ export default function App() {
                   <br />
                   <span>{t("işletmenizin bütününü düşünüyoruz.")}</span>
                 </p>
+                <div className="about-copy-details">
                 <p>
                   {t(
                     "Hakan Köse Unternehmensverwaltung olarak serbest meslek sahiplerine, bağımsız çalışanlara ve küçük ve orta ölçekli işletmelere ticari ve idari konularda destek veriyoruz.",
@@ -658,6 +698,7 @@ export default function App() {
                     "Finansal muhasebe, bordrolama, şirket kuruluşu ve işletme danışmanlığında yanınızdayız; vergi hukuku, hukuki ve sigorta konularında iş ortağı ağımız üzerinden ek uzmanlığa ulaşmanızı sağlıyoruz.",
                   )}
                 </p>
+                </div>
               </div>
             </div>
           </div>
@@ -755,7 +796,7 @@ export default function App() {
             <div className="email-dialog-address">{emailDialog.email}</div>
             <div className="email-dialog-actions">
               <button className="button primary" type="button" onClick={copyEmail}>
-                {t(emailCopied ? "E-posta adresi kopyalandı" : "E-posta adresini kopyala")}
+                {t(emailCopied === true ? "E-posta adresi kopyalandı" : "E-posta adresini kopyala")}
               </button>
               <a
                 className="button email-app-link"
@@ -767,6 +808,7 @@ export default function App() {
                 {t("E-posta uygulamasını aç")} <ArrowUpRight size={18} />
               </a>
             </div>
+            {emailCopied === "failed" && <p role="status">{t("Kopyalama yapılamadı. Bilgiyi seçip elle kopyalayabilirsiniz.")}</p>}
           </div>
         )}
       </dialog>
@@ -802,13 +844,14 @@ export default function App() {
           <div className="email-dialog-address">030 / 42 80 26 36</div>
           <div className="email-dialog-actions">
             <button className="button primary" type="button" onClick={copyPhone}>
-              {t(phoneCopied ? "Telefon numarası kopyalandı" : "Telefon numarasını kopyala")}
+              {t(phoneCopied === true ? "Telefon numarası kopyalandı" : "Telefon numarasını kopyala")}
             </button>
             <a className="button email-app-link" href="tel:+493042802636">
               {t("Telefon uygulamasını aç")} <ArrowUpRight size={18} />
             </a>
           </div>
         </div>
+        {phoneCopied === "failed" && <p role="status">{t("Kopyalama yapılamadı. Bilgiyi seçip elle kopyalayabilirsiniz.")}</p>}
       </dialog>
       <dialog
         ref={legalDialogRef}

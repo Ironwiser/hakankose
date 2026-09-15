@@ -4,7 +4,7 @@ export const languageNames = { tr: "Türkçe", de: "Deutsch", en: "English" };
 export const storageKey = "hakan-kose-language";
 
 const entries = [
-  ["Büyük ölçekli işletmeler", "Großunternehmen", "Large enterprises"],
+  ["Kopyalama yapılamadı. Bilgiyi seçip elle kopyalayabilirsiniz.", "Kopieren nicht möglich. Sie können die Angaben markieren und manuell kopieren.", "Could not copy. You can select the details and copy them manually."],
   [
     "Rakamlarınız - düzenli, anlaşılır ve güvenilir.",
     "Ihre Zahlen – geordnet, verständlich und zuverlässig.",
@@ -113,9 +113,9 @@ const entries = [
   ["sağlam bir temel.", "für Ihr Geschäft.", "for your business."],
   ["GÜVENLE, BİRLİKTE.", "GEMEINSAM. VERTRAUENSVOLL.", "TOGETHER, WITH TRUST."],
   [
-    "İŞİNİZİN HER AŞAMASINDA",
-    "IN JEDER UNTERNEHMENSPHASE",
-    "AT EVERY STAGE OF YOUR BUSINESS",
+    "İşinizin her aşamasında",
+    "In jeder Unternehmensphase",
+    "At every stage of your business",
   ],
   ["Serbest meslek sahipleri", "Freiberufler", "Freelance professionals"],
   ["Bağımsız çalışanlar", "Selbstständige", "Self-employed individuals"],
