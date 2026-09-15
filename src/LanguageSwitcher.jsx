@@ -21,8 +21,15 @@ export function LanguageSwitcher({ language, onChange }) {
     const onPointerDown = (event) => {
       if (!root.current?.contains(event.target)) setExpanded(false);
     };
+    const onFocusIn = (event) => {
+      if (!root.current?.contains(event.target)) setExpanded(false);
+    };
     document.addEventListener("pointerdown", onPointerDown);
-    return () => document.removeEventListener("pointerdown", onPointerDown);
+    document.addEventListener("focusin", onFocusIn);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("focusin", onFocusIn);
+    };
   }, [expanded, language]);
 
   function onKeyDown(event) {
@@ -53,10 +60,6 @@ export function LanguageSwitcher({ language, onChange }) {
       className="language-switcher"
       ref={root}
       onKeyDown={onKeyDown}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget))
-          setExpanded(false);
-      }}
     >
       <button
         type="button"
