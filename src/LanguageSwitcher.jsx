@@ -57,9 +57,10 @@ export function LanguageSwitcher({ language, onChange }) {
 
   return (
     <div
-      className="language-switcher"
+      className="language-switcher notranslate"
       ref={root}
       onKeyDown={onKeyDown}
+      translate="no"
     >
       <button
         type="button"
