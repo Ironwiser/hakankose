@@ -1,7 +1,8 @@
 // Turkish source strings are the stable lookup keys. Company names and contact data stay unchanged.
 export const languages = ["tr", "de", "en"];
 export const languageNames = { tr: "Türkçe", de: "Deutsch", en: "English" };
-export const storageKey = "hakan-kose-language";
+// v2 resets the previous default once; selections made after this release remain persistent.
+export const storageKey = "hakan-kose-language-v2";
 
 const entries = [
   ["Kopyalama yapılamadı. Bilgiyi seçip elle kopyalayabilirsiniz.", "Kopieren nicht möglich. Sie können die Angaben markieren und manuell kopieren.", "Could not copy. You can select the details and copy them manually."],
