@@ -101,14 +101,14 @@ for (const language of ["tr", "de", "en"])
       ),
     );
   });
-test("Unavailable and invalid language storage falls back to Turkish", () => {
+test("Unavailable and invalid language storage falls back to German", () => {
   globalThis.localStorage = { getItem: () => "fr" };
-  assert.equal(readLanguage(), "tr");
+  assert.equal(readLanguage(), "de");
   globalThis.localStorage = {
     getItem: () => {
       throw Error("blocked");
     },
   };
-  assert.equal(readLanguage(), "tr");
+  assert.equal(readLanguage(), "de");
   delete globalThis.localStorage;
 });

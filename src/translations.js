@@ -598,9 +598,9 @@ export function translate(key, language) {
 export function readLanguage() {
   try {
     const saved = localStorage.getItem(storageKey);
-    return languages.includes(saved) ? saved : "tr";
+    return languages.includes(saved) ? saved : "de";
   } catch {
-    return "tr";
+    return "de";
   }
 }
 
